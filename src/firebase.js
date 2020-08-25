@@ -1,3 +1,5 @@
+import firebase from 'firebase';
+
 const firebaseConfig = {
   apiKey: "AIzaSyDgcFESZu6P4-56N6Kq0XVmzg9HLi6-EHM",
   authDomain: "whatsapp-clone-15177.firebaseapp.com",
@@ -8,3 +10,11 @@ const firebaseConfig = {
   appId: "1:88600478910:web:d022971379f4cf8b03caef",
   measurementId: "G-9GSVN08VZL",
 };
+
+const firebaseApp = firebase.initializeApp(firebaseConfig);
+const db = firebaseApp.firestore();
+const auth = firebase.auth();
+const provider = new firebase.auth.GoogleAuthProvider();
+
+export {auth, provider};
+export default db;
