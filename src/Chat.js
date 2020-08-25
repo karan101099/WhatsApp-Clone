@@ -6,32 +6,41 @@ import {
   MoreVert,
   SearchOutlined,
   InsertEmoticon,
-  
 } from "@material-ui/icons";
-import MicIcon from "@material-ui/icons/Mic"
-import {useParams} from "react-router-dom";
+import MicIcon from "@material-ui/icons/Mic";
+import { useParams } from "react-router-dom";
+import db from "./firebase";
 
 function Chat() {
   const [input, setInput] = useState("");
   const [seed, setSeed] = useState("");
-  const {roomID} = useParams();
+  const { roomId } = useParams();
+  const [roomName, setRoomName] = useState("");
 
   useEffect(() => {
-    setSeed(Math.floor(Math.random()*5000));
-  }, []);
+    if (roomId) {
+      db.collection("rooms")
+        .doc(roomId)
+        .onSnapshot((snapshot) => setRoomName(snapshot.data().name));
+    }
+  }, [roomId]);
+
+  useEffect(() => {
+    setSeed(Math.floor(Math.random() * 5000));
+  }, [roomId]);
 
   const sendMessage = (e) => {
     e.preventDefault();
     console.log(input);
     setInput("");
-  }
+  };
 
   return (
     <div className="chat">
       <div className="chat__header">
-        <Avatar />
+        <Avatar src={`https://avatars.dicebear.com/api/human/${seed}.svg`} />
         <div className="chat__headerInfo">
-          <h3>Room Name</h3>
+          <h3>{roomName}</h3>
           <p>Last Seen at...</p>
         </div>
         <div className="chat__headerRight">
@@ -57,10 +66,19 @@ function Chat() {
       <div className="chat__footer">
         <InsertEmoticon />
         <form action="">
-          <input type="text" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Type a message" name="" id=""/>
-          <button onClick={sendMessage} type="submit">Send a message</button>
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Type a message"
+            type="text"
+            name=""
+            id=""
+          />
+          <button onClick={sendMessage} type="submit">
+            Send a message
+          </button>
         </form>
-        <MicIcon/>
+        <MicIcon />
       </div>
     </div>
   );
